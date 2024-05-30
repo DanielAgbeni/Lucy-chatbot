@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<title>Lucy Chatbot</title>
+	</head>
+	<body>
+		<h1>Lucy Chatbot</h1>
+		<div id="chat-container"></div>
+		<form id="user-input-form">
+			<input
+				type="text"
+				id="user-input"
+				placeholder="Type your message..." />
+			<button type="submit">Send</button>
+		</form>
+		<script>
+			document
+				.getElementById('user-input-form')
+				.addEventListener('submit', function (event) {
+					event.preventDefault();
+					let userInput = document.getElementById('user-input').value;
+					document.getElementById(
+						'chat-container',
+					).innerHTML += `<p>You: ${userInput}</p>`;
+					fetch('/chat', {
+						method: 'POST',
+						body: new URLSearchParams({
+							user_input: userInput,
+						}),
+						headers: {
+							'Content-Type': 'application/x-www-form-urlencoded',
+						},
+					})
+						.then((response) => response.text())
+						.then((data) => {
+							document.getElementById(
+								'chat-container',
+							).innerHTML += `<p>Lucy: ${data}</p>`;
+						});
+					document.getElementById('user-input').value = '';
+				});
+		</script>
+	</body>
+</html>
